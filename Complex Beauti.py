@@ -1,7 +1,7 @@
 # Minjun Kim
 # Term Project - "Complex Beauti.py"
 
-import cmath, math, colorsys
+import cmath, math
 from cmu_112_graphics import *
 
 def appStarted(app):
@@ -58,16 +58,10 @@ def rgbToHex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
 
 def colorPicker(app, r, g, b, i):
-
-    #(h, s, v) = colorsys.rgb_to_hsv(app.color[0]/255, app.color[1]/255, app.color[2]/255)
-
     if i == 0:
         (r, g, b) = (0, 0, 0)
 
     else:
-        # (h, s, v) = (h * (1-(i/app.maxIter)), s, v)
-        # (r, g, b) = colorsys.hsv_to_rgb(h, s, v)
-        # (r, g, b) = (int(r*255), int(g*255), int(b*255))
         (r, g, b) = (app.color[0] + int((255-app.color[0])*app.brightness*(1-(i/app.maxIter))),
                     app.color[1] + int((255-app.color[1])*app.brightness*(1-(i/app.maxIter))), 
                     app.color[2] + int((255-app.color[2])*app.brightness*(1-(i/app.maxIter))))

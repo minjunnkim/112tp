@@ -6,7 +6,11 @@ and a loading screen while the visualization loads.
 The following are possible functions to be implemented: animation of a rotation julia set, screenshot capabilities (save to user's computer).
 
 Structural Plan:
-The finalized project will be organized in a single python file, in a familiar cmu graphics format that we used in our homeworks. 
+The finalized project will be organized in multiple python files, one containing the graphics/animations, in a familiar 
+cmu graphics format that we used in our homeworks, and others containing object-oriented programming style class files 
+for buttons, pixel-based drawing, and others to refine the UI
+
+Modules used: cmath, math (both built-in, cmath is used only for the complex number format and simple operations such as multiplication)
 
     -appStarted(app) will contain all of the variables to be used throughout the entire code. Some variables include base color(app.color), zoom (app.zoom), max iteration (app.maxIter), etc.
 
@@ -36,7 +40,6 @@ user-input values, such as "c", zoom, escape radius, maximum iteration, brightne
 but this value is used to brighten regions that are not the base color in the visualization)
 
 (Lighter color means that the iteration was closer to maxIter, black means that the iteration went through all maxIter amount of iterations)
-
 
 The getJuliaSet(app), as of now, will iterate through every pixel in the given range and iterate through a while loop that will run at max maxIter 
 many iterations and will stop if the z value exceeds app.escapeRadius ** 2. Based on this i, the iteration stopped at, the color is determined 
