@@ -50,23 +50,17 @@ def drawJuliaSet(app, canvas):
                     i-=1
                 
                 #print(app.color, i, app.maxIter)
-                r = int(app.color[0]*(i/app.maxIter))
-                g = int(app.color[1]*(i/app.maxIter))
-                b = int(app.color[2]*(i/app.maxIter))
-                #print(r, g, b)
-
-                r = 0 if r < 0 else r
-                g = 0 if g < 0 else g
-                b = 0 if b < 0 else b
-
+                r = i << 21
+                g = i << 10
+                b = i * 8
                 color = rgbToHex(r, g, b)
-                print((x,y), (x+1,y+1), color)
+                #print((x,y), (x+1,y+1), color)
                 canvas.create_rectangle(x, y, x+1, y+1, fill = color, width = 0)
 
 def drawMainScreen(app, canvas):
     if not app.julia:
         canvas.create_rectangle(app.width/8, 60, app.width/4, 100)
-        canvas.create_text(app.width*3/16, 80, text = "Julia Set")
+        canvas.create_text(app.width*3/16, 80, text = "Julia")
 
 
 def redrawAll(app, canvas):
@@ -74,7 +68,7 @@ def redrawAll(app, canvas):
     drawJuliaSet(app, canvas)
 
 def main():
-    runApp(width=900, height=600)
+    runApp(width=320, height=240)
 
 if __name__ == '__main__':
     main()
