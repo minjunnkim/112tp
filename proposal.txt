@@ -1,5 +1,5 @@
 Project Description:
-"Complex Beauti.py" is a python program that visualizes the Julia set given the c value. This "c" is a complex number of format x + yi. 
+"Complex Beauti.py" (this is the file name and the project name) is a python program that visualizes the Julia set given the c value. This "c" is a complex number of format x + yi. 
 Topics relating to Julia sets are taught in Analysis of Complex Kind courses.
 The program will have custom input(c) capabilities, zoom in/out, custom colors, custom maximum iteration, custom brightness, custom escape radius,
 and a loading screen while the visualization loads.
