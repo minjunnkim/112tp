@@ -1,0 +1,19 @@
+Project Plan [20 pts]
+Write up a proposal file (in the file proposal.txt, or .docx, or .pdf) which should include the following components:
+
+Project Description [5 pts]: The name of the term project and a short description of what it will be.
+
+Structural Plan [5 pts]: A structural plan for how the finalized project will be organized in different functions, files and/or objects.
+
+Algorithmic Plan [5 pts]: An algorithmic plan for how you will approach the trickiest part of the project. Be sure to clearly highlight which part(s) of your project are most complex.
+
+Version Control Plan [5 pts]: A short description and image demonstrating how you are using version control to back up your code. Notes:
+You must back up your code somehow!!!
+Your backups must not be on your computer (ideally, store them in the cloud)
+Google Drive is a common option, or GitHub if you are comfortable with it.
+
+Project Description:
+"complex beautipy" (?) is a python program 
+
+1920 x 1080 -> 5:30 at 255 iterations
+600 x 500 -> 1:00 at 255 iterations
