@@ -1,4 +1,7 @@
-import cmath, math
+# Minjun Kim
+# 
+
+import cmath, math, colorsys
 from cmu_112_graphics import *
 
 def appStarted(app):
@@ -6,52 +9,47 @@ def appStarted(app):
     app.dx = 0
     app.dy = 0
     app.escapeRadius = 2
-    app.color = (26, 31, 163)
+    app.color = (2, 5, 89)
     app.c = complex(-0.7, 0.27015)
-    app.maxIter = 1000
+    app.maxIter = 5000
     app.screen = dict()
     app.julia = False
     app.loading = False
+    app.brightness = 32
 
-    #color presets
-    app.preRed = [(255, 0, 0), ]
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
+def juliaInput(app):
+    temp = app.getUserInput('Enter the real part for your c')
+    
+    while not isfloat(temp):
+        temp = app.getUserInput('Invalid input, please re-enter the real part for your c')
+    
+    real = temp
+
+    temp = app.getUserInput('Enter the imaginary part for your c')
+    
+    while not isfloat(temp):
+        temp = app.getUserInput('Invalid input, please re-enter the imaginary part for your c')
+    
+    imag = temp
+        
+    temp = complex(real, imag)
+    app.c = temp
+    getJuliaSet(app)
 
 def keyPressed(app, event):
-    c = False
     if event.key == 'j':
-        try:
-            real = float(app.getUserInput('Enter the real part for your c'))
-        except ValueError:
-            print("asdfasdf")
-            app.message = 'Invalid input. Please enter a number'
-            c = True
-            
-        try:
-            imag = float(app.getUserInput('Enter the imaginary part for your c'))
-        except ValueError:
-            app.message = 'Invalid input. Please enter a number'
-            c = True
-            
-        temp = complex(real, imag)
-        app.c = temp
-        getJuliaSet(app)
+        juliaInput(app)
 
 def mousePressed(app, event):
     if not app.julia and event.x > app.width/8 and event.x < app.width/4 and event.y > 60 and event.y < 100:
-        try:
-            real = float(app.getUserInput('Enter the real part for your c'))
-        except ValueError:
-            app.message = 'Invalid input. Please enter a number'
-            return
-        try:
-            imag = float(app.getUserInput('Enter the imaginary part for your c'))
-        except ValueError:
-            app.message = 'Invalid input. Please enter a number'
-            return
-        temp = complex(real, imag)
-        app.c = temp
-        getJuliaSet(app)
-        app.loading = True
+        juliaInput(app)
 
 def timerFired(app):
     pass
@@ -60,50 +58,25 @@ def rgbToHex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
 
 def colorPicker(app, r, g, b, i):
+
+    #(h, s, v) = colorsys.rgb_to_hsv(app.color[0]/255, app.color[1]/255, app.color[2]/255)
+
     if i == 0:
         (r, g, b) = (0, 0, 0)
 
-    elif i < app.maxIter//10:
-        (r, g, b) = (255, 255, 255)
-    
-    elif i < app.maxIter//8:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(8/9)), 
-                    app.color[1] + int((255-app.color[1])*(8/9)), 
-                    app.color[2] + int((255-app.color[2])*(8/9)))
-        
-    elif i < app.maxIter//4:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(7/9)), 
-                    app.color[1] + int((255-app.color[1])*(7/9)), 
-                    app.color[2] + int((255-app.color[2])*(7/9)))
-
-    elif i < (app.maxIter*3)//8:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(6/9)), 
-                    app.color[1] + int((255-app.color[1])*(6/9)), 
-                    app.color[2] + int((255-app.color[2])*(6/9)))
-
-    elif i < app.maxIter//2:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(5/9)), 
-                    app.color[1] + int((255-app.color[1])*(5/9)), 
-                    app.color[2] + int((255-app.color[2])*(5/9)))
-
-    elif i < (app.maxIter*5)//8:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(4/9)), 
-                    app.color[1] + int((255-app.color[1])*(4/9)), 
-                    app.color[2] + int((255-app.color[2])*(4/9)))
-
-    elif i < (app.maxIter*3)//4:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(3/9)), 
-                    app.color[1] + int((255-app.color[1])*(3/9)), 
-                    app.color[2] + int((255-app.color[2])*(3/9)))
-
-    elif i < (app.maxIter*7)//8:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*(2/9)), 
-                    app.color[1] + int((255-app.color[1])*(2/9)), 
-                    app.color[2] + int((255-app.color[2])*(2/9)))
-
     else:
-        (r, g, b) = app.color
-
+        # (h, s, v) = (h * (1-(i/app.maxIter)), s, v)
+        # (r, g, b) = colorsys.hsv_to_rgb(h, s, v)
+        # (r, g, b) = (int(r*255), int(g*255), int(b*255))
+        (r, g, b) = (app.color[0] + int((255-app.color[0])*app.brightness*(1-(i/app.maxIter))),
+                    app.color[1] + int((255-app.color[1])*app.brightness*(1-(i/app.maxIter))), 
+                    app.color[2] + int((255-app.color[2])*app.brightness*(1-(i/app.maxIter))))
+        if r > 255:
+            r = 0
+        if g > 255:
+            g = 0
+        if b > 255:
+            b = 0
     return (r, g, b)
 
 def getJuliaSet(app):
@@ -122,7 +95,7 @@ def getJuliaSet(app):
             r, g, b = 0, 0, 0
             r, g, b = colorPicker(app, r, g, b, i)
             
-            print(i, r, g, b)
+            #print(i, r, g, b)
 
             color = rgbToHex(r, g, b)
             temp = app.screen.get(color, set())

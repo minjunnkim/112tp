@@ -13,7 +13,57 @@ Your backups must not be on your computer (ideally, store them in the cloud)
 Google Drive is a common option, or GitHub if you are comfortable with it.
 
 Project Description:
-"complex beautipy" (?) is a python program 
+"complex beauti.py" is a python program that visualizes the Julia set given the c value. This "c" is a complex number of format x + yi. 
+Topics relating to Julia sets are taught in Analysis of Complex Kind courses.
+The program will have custom input(c) capabilities, zoom in/out, custom colors, custom maximum iteration, custom brightness, custom escape radius,
+and a loading screen while the visualization loads.
+The following are possible functions to be implemented: animation of a rotation julia set, screenshot capabilities (save to user's computer).
 
-1920 x 1080 -> 5:30 at 255 iterations
-600 x 500 -> 1:00 at 255 iterations
+Structural Plan:
+The finalized project will be organized in a single python file, in a familiar cmu graphics format that we used in our homeworks. 
+
+    -appStarted(app) will contain all of the variables to be used throughout the entire code. Some variables include base color(app.color), zoom (app.zoom), max iteration (app.maxIter), etc.
+
+    -keyPressed and mousePressed will contain the corresponding works for the keys pressed and mouse clicks. For example, a function corresponding to 'j' key is to draw the julia set.
+
+    -isfloat(num) will be used to check if user's input of "c" value is a valid float input. True if it is, False if not.
+
+    -getJuliaSet(app) calculates the julia set. More information is below on algorithmic plan.
+
+    -colorPicker(app, r, g, b, i) will return a (r, g, b) value given the final iteration, i for each pixel on the screen. This will determine the color of the pixel on the screen. 
+        -rgbToHex(r, g, b) will convert the given r, g, b value into a hexcode color.
+
+    -redrawAll(app, canvas) and all of the draw functions will be used to draw the main screen, the julia set, and other buttons/texts on the screen. 
+        A boolean variable in app will be used to turn on/off these displays.
+
+        -drawLoadingScreen(app, canvas) (in progress, may be removed) will draw a loading screen while the getJuliaSet(app) calculates the julia set. 
+            This is so the user has a visual while the long process of calculation goes on. Currently, the visualization takes ~30 seconds on a 480x360 resolution
+
+        -drawJuliaSet(app, canvas) will draw the actual julia set on the screen based on the app.screen dictionary updated from getJuliaSet function above.
+            the two functions getJuliaSet(app) and drawJuliaSet(app, canvas) are separated in order to not do the julia set calculation process over and over 
+            again while the program runs. (Since draw functions are run over and over as the app runs). Using sets and dictionaries, we maximize the efficiency.
+    
+Algorithmic Plan:
+The most trickiest part of this project is calculating the julia set given c, in the most efficient, yet accurate way possible and interpreting the 
+corresponding color, based on the default or user-input color, in the visualization. This calculation also needs to be able to be adjusted by different
+user-input values, such as "c", zoom, escape radius, maximum iteration, brightness(not the brightness of the app, 
+but this value is used to brighten regions that are not the base color in the visualization)
+
+(Lighter color means that the iteration was closer to maxIter, black means that the iteration went through all maxIter amount of iterations)
+
+
+The getJuliaSet(app), as of now, will iterate through every pixel in the given range and iterate through a while loop that will run at max maxIter 
+many iterations and will stop if the z value exceeds app.escapeRadius ** 2. Based on this i, the iteration stopped at, the color is determined 
+thorugh the colorPicker function above. With the color, we put it into a dictionary, app.screen, with color as key and set of pixels as the value 
+with a format {color: {pixel}, color2: {pixel1, pixel2, ...}, ...} 
+
+More efficiency procedures are planned to be implemeneted (dynamic programming, etc.) in getJuliaSet(app) function in order to further reduce the runtime
+
+
+    
+
+   
+        
+
+
+     

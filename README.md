@@ -1,1 +1,0 @@
-# Mandelbrot Sets/Julia Sets
