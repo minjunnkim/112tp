@@ -1,19 +1,5 @@
-Project Plan [20 pts]
-Write up a proposal file (in the file proposal.txt, or .docx, or .pdf) which should include the following components:
-
-Project Description [5 pts]: The name of the term project and a short description of what it will be.
-
-Structural Plan [5 pts]: A structural plan for how the finalized project will be organized in different functions, files and/or objects.
-
-Algorithmic Plan [5 pts]: An algorithmic plan for how you will approach the trickiest part of the project. Be sure to clearly highlight which part(s) of your project are most complex.
-
-Version Control Plan [5 pts]: A short description and image demonstrating how you are using version control to back up your code. Notes:
-You must back up your code somehow!!!
-Your backups must not be on your computer (ideally, store them in the cloud)
-Google Drive is a common option, or GitHub if you are comfortable with it.
-
 Project Description:
-"complex beauti.py" is a python program that visualizes the Julia set given the c value. This "c" is a complex number of format x + yi. 
+"Complex Beauti.py" is a python program that visualizes the Julia set given the c value. This "c" is a complex number of format x + yi. 
 Topics relating to Julia sets are taught in Analysis of Complex Kind courses.
 The program will have custom input(c) capabilities, zoom in/out, custom colors, custom maximum iteration, custom brightness, custom escape radius,
 and a loading screen while the visualization loads.
@@ -59,7 +45,8 @@ with a format {color: {pixel}, color2: {pixel1, pixel2, ...}, ...}
 
 More efficiency procedures are planned to be implemeneted (dynamic programming, etc.) in getJuliaSet(app) function in order to further reduce the runtime
 
-
+Version Control Plan:
+I am using github in order to back up my code. I commit and push after every work session with the commit message as the date. Image is in the zip file.
     
 
    

@@ -1,5 +1,5 @@
 # Minjun Kim
-# 
+# Term Project - "Complex Beauti.py"
 
 import cmath, math, colorsys
 from cmu_112_graphics import *
