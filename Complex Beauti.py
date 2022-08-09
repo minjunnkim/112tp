@@ -5,7 +5,7 @@ import cmath, math
 from cmu_112_graphics import *
 
 def appStarted(app):
-    app.zoom = 1
+    app.zoom = 3
     app.dx = 0
     app.dy = 0
     app.escapeRadius = 2
@@ -30,14 +30,14 @@ def juliaInput(app):
     while not isfloat(temp):
         temp = app.getUserInput('Invalid input, please re-enter the real part for your c')
     
-    real = temp
+    real = float(temp)
 
     temp = app.getUserInput('Enter the imaginary part for your c')
     
     while not isfloat(temp):
         temp = app.getUserInput('Invalid input, please re-enter the imaginary part for your c')
     
-    imag = temp
+    imag = float(temp)
         
     temp = complex(real, imag)
     app.c = temp
@@ -85,7 +85,7 @@ def getJuliaSet(app):
             while z.real**2 + z.imag**2 < app.escapeRadius**2 and i > 0:
                 z = z*z + app.c
                 i-=1
-
+            
             r, g, b = 0, 0, 0
             r, g, b = colorPicker(app, r, g, b, i)
             
