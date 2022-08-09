@@ -2,24 +2,27 @@
 # Term Project - "Complex Beauti.py"
 #
 
-import cmath, math
+import cmath, math, sys
 from cmu_112_graphics import *
+
+# change recursion depth limit 
+# https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it
+sys.setrecursionlimit(10000)
 
 def appStarted(app):
     app.zoom = 1
     app.dx = 0
     app.dy = 0
     app.escapeRadius = 2
-    app.color = (65, 38, 145)
+    app.color = (0, 12, 179)
     app.c = complex(-0.7, 0.27015)
-    app.maxIter = 5000
-    app.screen = dict()
+    app.maxIter = 100
     app.julia = False
     app.loading = False
-    app.brightness = 1
-    app.juliaWidth = 600
-    app.juliaHeight = 450
+    app.juliaWidth = 480 #600
+    app.juliaHeight = 360 #540
     app.juliaImage = Image.new('RGB', (app.juliaWidth, app.juliaHeight), app.color)
+    app.idict = dict()
 
 def isfloat(num):
     try:
@@ -49,7 +52,6 @@ def juliaInput(app):
                     temp = complex(real, imag)
                     app.c = temp
                     getJuliaSet(app)
-    return
 
 def keyPressed(app, event):
     if event.key == "Up":
@@ -74,49 +76,71 @@ def timerFired(app):
 
 def colorPicker(app, r, g, b, i):
     if i == 0:
-        (r, g, b) = (0, 0, 0)
+        (r, g, b) = (255-app.color[0], 255-app.color[1], 255-app.color[2])
 
     else:
-        (r, g, b) = (app.color[0] + int((255-app.color[0])*app.brightness*(1-(i/app.maxIter))),
-                    app.color[1] + int((255-app.color[1])*app.brightness*(1-(i/app.maxIter))), 
-                    app.color[2] + int((255-app.color[2])*app.brightness*(1-(i/app.maxIter))))
-        if r > 255:
-            r = 0
-        if g > 255:
-            g = 0
-        if b > 255:
-            b = 0
+        (r, g, b) = (app.color[0] + int((255-app.color[0])*(1-(i/app.maxIter))),
+                    app.color[1] + int((255-app.color[1])*(1-(i/app.maxIter))), 
+                    app.color[2] + int((255-app.color[2])*(1-(i/app.maxIter))))
+    if r > 255:
+        r = 255-app.color[0]
+    if g > 255:
+        g = 255-app.color[1]
+    if b > 255:
+        b = 255-app.color[2]
     return (r, g, b)
 
+def recursiveJulia(app, z, i):
+    tempz = z*z + app.c
+    if i == 0:
+        return 0
+    elif tempz.real**2 + tempz.imag**2 >= app.escapeRadius**2:
+        return 1
+    elif z in app.idict:
+        return app.idict[z]
+    elif z not in app.idict:
+        app.idict[z] = 1 + recursiveJulia(app, tempz, i-1)
+        return app.idict[z]
+    else:
+        return 1 + recursiveJulia(app, tempz, i-1)
+    
+
 def getJuliaSet(app):
-    app.loading = True
     for x in range(app.juliaWidth):
         for y in range(app.juliaHeight):
             app.x = x
             app.y = y
-            z = complex((1.7*(x-(app.juliaWidth/2)))/(app.zoom*app.juliaWidth*0.5) + app.dx, 
-            (1.2*(y-(app.juliaHeight/2)))/(app.zoom*app.juliaHeight*0.5) + app.dy)
+            z = complex((2*(x-(app.juliaWidth/2)))/(app.zoom*app.juliaWidth*0.5) + app.dx, 
+            (1.5*(y-(app.juliaHeight/2)))/(app.zoom*app.juliaHeight*0.5) + app.dy)
             
             i = app.maxIter
+            #i = app.maxIter-recursiveJulia(app, z, app.maxIter)
             while z.real**2 + z.imag**2 < app.escapeRadius**2 and i > 0:
+                # if z in app.idict:
+                #     print("a")
+                #     i -= app.idict[z] - 1
+                #     break
                 z = z*z + app.c
                 i-=1
             
+            #if app.idict[z] :
+                
+
             r, g, b = 0, 0, 0
             r, g, b = colorPicker(app, r, g, b, i)
             
             #print(x, y, i, r, g, b)
             app.juliaImage.putpixel((x,y), (r, g, b))
-    app.loading = False
     app.julia = True
 
 def drawJuliaSet(app, canvas):
     if app.julia:
+        #print("a")
         canvas.create_image(app.width/2, app.juliaHeight/2 + 20, image=ImageTk.PhotoImage(app.juliaImage))
 
 def drawLoadingScreen(app, canvas):
     if app.loading:
-        print("a")
+        print("l")
         canvas.create_text(app.width/2, app.height/2, text = ("|" * int((app.x/app.juliaWidth)*20)) + ("-" * (1-(int((app.x/app.juliaWidth)*20)))))
 
 def drawMainScreen(app, canvas):
