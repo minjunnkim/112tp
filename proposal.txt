@@ -54,15 +54,16 @@ I am using github in order to back up my code. I commit and push after every wor
 TP2 Update:
 Added a recursion method of calculating the julia set. Will add a button to switch between two algorithms.
 **The improved original algorithm is significantly faster now, averaging ~1 to 2 seconds on 480x360 from ~45 seconds before.
-**Recursion method takes <10 seconds, slower than the modified original algorithm
+**Recursion method takes <10 seconds, slightly slower than the modified original algorithm
 ColorPicker function was modified. Since we use Image and set the mode to RGB, we do not need rgbtohex conversion.
 Also added a complementary color calculation instead of black for the pixels that go through all maxIter iterations.
 Arrow button images were added for zoom in/out, move up/down/right/left, increase/decrease max iteration.
-A simple button will be added to change color. I am planning to make it so that users input rgb code, 
-with a color preview before updating the color of the fractal. 
+A simple button and a separate screen will be added to change color. Users will input rgb code, 
+with a color preview before actually updating the color of the fractal. 
+A button to switch from recursion/normal
 
 To-do:
 Finish class julia.py (for julia sets)
-Make class button.py (for buttons)
-Create better visuals
+Make class button.py (for buttons)  -- Done
+Create better visuals  -- In-Progress
 Preset suggestions and guides on the input on the screen
