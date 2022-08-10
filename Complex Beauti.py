@@ -3,6 +3,7 @@
 #
 
 import cmath, math, sys
+from btns import *
 from cmu_112_graphics import *
 
 # change recursion depth limit 
@@ -11,12 +12,13 @@ sys.setrecursionlimit(10000)
 
 def appStarted(app):
     # julia set controls (All values can be user-controlled)
-    app.c = complex(-0.7, 0.27015)
+    app.c = complex(0, 0)
     app.zoom = 1
     app.dx = 0
     app.dy = 0
     app.escapeRadius = 2
     app.color = (0, 12, 179)
+    app.complCol = False
     app.maxIter = 100
     #app.idict = dict()
 
@@ -29,9 +31,39 @@ def appStarted(app):
     app.loading = False
     
     # UI images
+    # https://www.flaticon.com/
     app.upArrow = app.loadImage('images/upArrow.png')
     app.downArrow = app.loadImage('images/downArrow.png')
+    app.leftArrow = app.loadImage('images/leftArrow.png')
+    app.rightArrow = app.loadImage('images/rightArrow.png')
+    # app.plus = app.loadImage('images/plus.png')
+    # app.minus = app.loadImage('images/minus.png')
+    app.btn = app.loadImage('images/button.png')
+    app.btn = app.scaleImage(app.btn, 1/4)
 
+    # Buttons
+    app.juliaButton = btns(app.width/2, app.height/2, app.btn)
+    app.backButton = btns(20, 20, app.btn)
+    
+    # maxIter control
+    # app.smallIterInc = btns(x, y, app.upArrow)
+    # app.smallIterDec = btns(x, y, app.downArrow)
+    # app.bigIterInc = btns(x, y, app.upArrow)
+    # app.bigIterDec = btns(x, y, app.downArrow)
+    
+    # # zoom control
+    # app.zoomIn = button(x, y, app.plus)
+    # app.zoomOut = button(x, y, app.minus)
+
+    # # move control
+    # app.up = button(x, y, app.upArrow)
+    # app.down = button(x, y, app.downArrow)
+    # app.left = button(x, y, app.leftArrow)
+    # app.right = button(x, y, app.rightArrow)
+    
+    # # color control
+    # app.compl = button(x, y, app.btn)
+    # app.changeCol = button(x, y, app.btn)
 
 def isfloat(num):
     try:
@@ -42,19 +74,19 @@ def isfloat(num):
 
 # Get "c" value input
 def juliaInput(app):
-    temp = app.getUserInput('Enter the real part for your c')
+    temp = app.getUserInput('Enter the real part for your c (-1 to 1)')
     
     if temp != None:
-        while not isfloat(temp):
-            temp = app.getUserInput('Invalid input, please re-enter the real part for your c')
+        while not isfloat(temp) or float(temp) < -1 or float(temp) > 1:
+            temp = app.getUserInput('Invalid input, please re-enter the real part for your c (-1 to 1)')
 
         if temp != None:
             real = float(temp)
-            temp = app.getUserInput('Enter the imaginary part for your c')
+            temp = app.getUserInput('Enter the imaginary part for your c (-1 to 1)')
             
             if temp != None:
-                while not isfloat(temp):
-                    temp = app.getUserInput('Invalid input, please re-enter the imaginary part for your c')
+                while not isfloat(temp) or float(temp) < -1 or float(temp) > 1:
+                    temp = app.getUserInput('Invalid input, please re-enter the imaginary part for your c (-1 to 1)')
             
                 if temp != None:
                     imag = -1*float(temp)
@@ -78,8 +110,20 @@ def keyPressed(app, event):
         getJuliaSet(app)
 
 def mousePressed(app, event):
-    if not app.julia and event.x > app.width/8 and event.x < app.width/4 and event.y > 60 and event.y < 100:
+    if not app.julia and app.juliaButton.clicked(event.x, event.y):
         juliaInput(app)
+    if app.julia and app.backButton.clicked(event.x, event.y):
+        app.julia = False
+    #if app.julia:
+        # # maxIter control
+        # if app.smallIterInc.clicked(event.x, event.y):
+        #     app.maxIter += 10
+        # elif app.smallIterDec.clicked(event.x, event.y):
+        #     app.maxIter -= 10
+        # elif app.bigIterInc.clicked(event.x, event.y):
+        #     app.maxIter += 50
+        # elif app.bigIterDec.clicked(event.x, event.y):
+        #     app.maxIter -= 50
 
 def timerFired(app):
     pass
@@ -88,7 +132,7 @@ def colorPicker(app, r, g, b, i):
     # complementary color calculation for pixels that accomplishes all maxIter iterations
     # https://www.101computing.net/complementary-colours-algorithm/ 
     if i == 0:
-        (r, g, b) = (255-app.color[0], 255-app.color[1], 255-app.color[2])
+        (r, g, b) = (255-app.color[0], 255-app.color[1], 255-app.color[2]) if app.complCol else (255, 255, 255)
 
     else:
         # The color is scaled from the base color to white
@@ -96,11 +140,11 @@ def colorPicker(app, r, g, b, i):
                     app.color[1] + int((255-app.color[1])*(1-(i/app.maxIter))), 
                     app.color[2] + int((255-app.color[2])*(1-(i/app.maxIter))))
     if r > 255:
-        r = 255-app.color[0]
+        r = 255-app.color[0] if app.complCol else 255
     if g > 255:
-        g = 255-app.color[1]
+        g = 255-app.color[1] if app.complCol else 255
     if b > 255:
-        b = 255-app.color[2]
+        b = 255-app.color[2] if app.complCol else 255
     return (r, g, b)
 
 def recursiveJulia(app, z, i):
@@ -149,16 +193,23 @@ def getJuliaSet(app):
 
 def drawJuliaSetScreen(app, canvas):
     if app.julia:
-        #print("a")
+        # Julia Visualization
         canvas.create_image(app.width/2, app.juliaHeight/2 + 20, image=ImageTk.PhotoImage(app.juliaImage))
+
+        # Back button
+        canvas.create_image(10+app.backButton.img.width/2, 25, image=ImageTk.PhotoImage(app.backButton.img))
+        canvas.create_text(10+app.backButton.img.width/2, 22, text = "Back")
+
+
         canvas.create_rectangle(app.width/2 + app.juliaWidth/2, 20, app.width/2 + app.juliaWidth/2 + 75, 20+app.juliaHeight)
         canvas.create_rectangle(app.width/2 - app.juliaWidth/2, 20, app.width/2 - app.juliaWidth/2 - 75, 20+app.juliaHeight)
         canvas.create_rectangle(app.width/2 - app.juliaWidth/2, 20+app.juliaHeight, app.width/2 + app.juliaWidth/2, 95+app.juliaHeight)
 
 def drawMainScreen(app, canvas):
     if not app.julia and not app.loading:
-        canvas.create_rectangle(app.width/8, 60, app.width/4, 100)
-        canvas.create_text(app.width*3/16, 80, text = "Julia")
+        canvas.create_image(app.juliaButton.x, app.juliaButton.y, image=ImageTk.PhotoImage(app.juliaButton.img))
+        canvas.create_text(app.width/2, app.height/2-3, text = "Julia")
+
 
 def redrawAll(app, canvas):
     drawMainScreen(app, canvas)
