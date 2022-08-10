@@ -16,7 +16,7 @@ def appStarted(app):
     app.escapeRadius = 2
     app.color = (0, 12, 179)
     app.c = complex(-0.7, 0.27015)
-    app.maxIter = 100
+    app.maxIter = 30
     app.julia = False
     app.loading = False
     app.juliaWidth = 480 #600
