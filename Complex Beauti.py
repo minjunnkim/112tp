@@ -24,6 +24,9 @@ def appStarted(app):
     app.juliaImage = Image.new('RGB', (app.juliaWidth, app.juliaHeight), app.color)
     app.idict = dict()
 
+    #images
+    app.upArrow = app.loadImage('images/upArrow.png')
+
 def isfloat(num):
     try:
         float(num)
@@ -133,15 +136,13 @@ def getJuliaSet(app):
             app.juliaImage.putpixel((x,y), (r, g, b))
     app.julia = True
 
-def drawJuliaSet(app, canvas):
+def drawJuliaSetScreen(app, canvas):
     if app.julia:
         #print("a")
         canvas.create_image(app.width/2, app.juliaHeight/2 + 20, image=ImageTk.PhotoImage(app.juliaImage))
-
-def drawLoadingScreen(app, canvas):
-    if app.loading:
-        print("l")
-        canvas.create_text(app.width/2, app.height/2, text = ("|" * int((app.x/app.juliaWidth)*20)) + ("-" * (1-(int((app.x/app.juliaWidth)*20)))))
+        canvas.create_rectangle(app.width/2 + app.juliaWidth/2, 20, app.width/2 + app.juliaWidth/2 + 75, 20+app.juliaHeight)
+        canvas.create_rectangle(app.width/2 - app.juliaWidth/2, 20, app.width/2 - app.juliaWidth/2 - 75, 20+app.juliaHeight)
+        canvas.create_rectangle(app.width/2 - app.juliaWidth/2, 20+app.juliaHeight, app.width/2 + app.juliaWidth/2, 95+app.juliaHeight)
 
 def drawMainScreen(app, canvas):
     if not app.julia and not app.loading:
@@ -149,9 +150,8 @@ def drawMainScreen(app, canvas):
         canvas.create_text(app.width*3/16, 80, text = "Julia")
 
 def redrawAll(app, canvas):
-    drawLoadingScreen(app, canvas)
     drawMainScreen(app, canvas)
-    drawJuliaSet(app, canvas)
+    drawJuliaSetScreen(app, canvas)
 
 def main():
     runApp(width=1600, height=900)
