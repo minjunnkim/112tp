@@ -10,22 +10,28 @@ from cmu_112_graphics import *
 sys.setrecursionlimit(10000)
 
 def appStarted(app):
+    # julia set controls (All values can be user-controlled)
+    app.c = complex(-0.7, 0.27015)
     app.zoom = 1
     app.dx = 0
     app.dy = 0
     app.escapeRadius = 2
     app.color = (0, 12, 179)
-    app.c = complex(-0.7, 0.27015)
-    app.maxIter = 30
-    app.julia = False
-    app.loading = False
+    app.maxIter = 100
+    #app.idict = dict()
+
     app.juliaWidth = 480 #600
     app.juliaHeight = 360 #540
     app.juliaImage = Image.new('RGB', (app.juliaWidth, app.juliaHeight), app.color)
-    app.idict = dict()
 
-    #images
+    # booleans for displays
+    app.julia = False
+    app.loading = False
+    
+    # UI images
     app.upArrow = app.loadImage('images/upArrow.png')
+    app.downArrow = app.loadImage('images/downArrow.png')
+
 
 def isfloat(num):
     try:
@@ -34,6 +40,7 @@ def isfloat(num):
     except ValueError:
         return False
 
+# Get "c" value input
 def juliaInput(app):
     temp = app.getUserInput('Enter the real part for your c')
     
@@ -78,10 +85,13 @@ def timerFired(app):
     pass
 
 def colorPicker(app, r, g, b, i):
+    # complementary color calculation for pixels that accomplishes all maxIter iterations
+    # https://www.101computing.net/complementary-colours-algorithm/ 
     if i == 0:
         (r, g, b) = (255-app.color[0], 255-app.color[1], 255-app.color[2])
 
     else:
+        # The color is scaled from the base color to white
         (r, g, b) = (app.color[0] + int((255-app.color[0])*(1-(i/app.maxIter))),
                     app.color[1] + int((255-app.color[1])*(1-(i/app.maxIter))), 
                     app.color[2] + int((255-app.color[2])*(1-(i/app.maxIter))))
@@ -107,7 +117,9 @@ def recursiveJulia(app, z, i):
     else:
         return 1 + recursiveJulia(app, tempz, i-1)
     
-
+# This google doc contains all the external websites used to further my understanding on the material in order to 
+# implement this algorithm
+# https://docs.google.com/document/d/1ACTq_AqFXH2byIl9DNLnuk8mpxn3MBKcLcbJy8ZYnv4/edit
 def getJuliaSet(app):
     for x in range(app.juliaWidth):
         for y in range(app.juliaHeight):
@@ -127,8 +139,7 @@ def getJuliaSet(app):
                 i-=1
             
             #if app.idict[z] :
-                
-
+            
             r, g, b = 0, 0, 0
             r, g, b = colorPicker(app, r, g, b, i)
             
