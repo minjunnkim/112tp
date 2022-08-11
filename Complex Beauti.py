@@ -12,6 +12,7 @@ sys.setrecursionlimit(5000)
 
 def appStarted(app):
     # julia set controls (All values can be user-controlled)
+    app.c = complex(0, 0)
     juliaReset(app)
 
     # unchanging
@@ -93,7 +94,6 @@ def appStarted(app):
 
 # Reset to default values
 def juliaReset(app):
-    app.c = complex(0, 0)
     app.zoom = 1
     app.dx = 0
     app.dy = 0
