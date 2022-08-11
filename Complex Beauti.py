@@ -1,10 +1,8 @@
 # Minjun Kim
 # Term Project - "Complex Beauti.py"
-#
-
-import cmath, math, sys
-from btns import *
 from cmu_112_graphics import *
+import sys
+from btns import *
 
 # change recursion depth limit 
 # https://stackoverflow.com/questions/3323001/what-is-the-maximum-recursion-depth-in-python-and-how-to-increase-it
@@ -19,10 +17,12 @@ def appStarted(app):
     app.juliaWidth = 480 #600
     app.juliaHeight = 360 #540
     app.juliaImage = Image.new('RGB', (app.juliaWidth, app.juliaHeight), app.color)
+    app.timerDelay = 40
 
     # booleans for displays
     app.julia = False
     app.loading = False
+    app.animateScreen = False
     
     # UI images
     # https://www.flaticon.com/
@@ -45,8 +45,26 @@ def appStarted(app):
     app.paintbrush = app.loadImage('images/paintbrush.png')
     app.paintbrush = app.scaleImage(app.paintbrush, 1/10)
 
-    app.cycle = app.loadImage('images/cycle.png')
-    app.cycle = app.scaleImage(app.cycle,1/10)
+        # GIF animation
+        # https://stackoverflow.com/questions/51523994/extract-key-frames-from-gif-using-python    
+    
+    # cycle (the recursive <-> normal button image)
+    temp = Image.open('images/ecosofy-organic.gif')
+    app.cycleSize = temp.n_frames
+
+    for i in range(temp.n_frames):
+        temp.seek(i)
+        temp.save(f"cycle/{i}.png")
+    
+    app.currCycle = 0
+    updateCycle(app)
+
+    # julia animation
+    app.juliaSize = 0
+    app.currJulia = 0
+    app.currJuliaPath = ""
+    app.juliaAni = app.loadImage("images/julia_set.gif")
+    app.juliaAni = app.scaleImage(app.juliaAni,1/3)
 
     app.colorCircle = app.loadImage('images/colorCircle.png')
     app.colorCircle = app.scaleImage(app.colorCircle, 1/6)
@@ -56,9 +74,13 @@ def appStarted(app):
 
     # Buttons
         #Change display 
-    app.juliaButton = btns(app.width/2, app.height/2, app.btn)
+    app.juliaButton = btns(app.width/2, app.height/3, app.btn)
     app.backButton = btns(10+app.btn.width/2, 25, app.btn)
+    app.animateButton = btns(app.width/2, app.height*2/3, app.btn)
         
+        # animation
+    app.aniBackButton = btns(10+app.btn.width/2, 25, app.btn)
+
         # color switch control
     app.colorButton = btns(app.width/2 + app.juliaWidth/6, 57.5+app.juliaHeight, app.btn)
     app.colorScreen = False
@@ -66,6 +88,9 @@ def appStarted(app):
     app.colorApplyButton = btns(app.width - (10+app.btn.width/2), 25, app.btn)
     app.getColorButton = btns(app.width*2/5, app.height/2, app.colorCircle)
     app.inputColor = app.color
+
+        # complementary color <-> white
+    #app.compl = btns(x, y, app.btn)
     
         # maxIter control
     x = app.width/2 + app.juliaWidth/2 + 37.5
@@ -82,15 +107,15 @@ def appStarted(app):
     # app.zoomIn = button(x, y, app.plus)
     # app.zoomOut = button(x, y, app.minus)
 
-    # # move control
-    # app.up = button(x, y, app.upArrow)
-    # app.down = button(x, y, app.downArrow)
-    # app.left = button(x, y, app.leftArrow)
-    # app.right = button(x, y, app.rightArrow)
-    
-    # # color control
-    # app.compl = button(x, y, app.btn)
-    # app.changeCol = button(x, y, app.btn)
+def updateCycle(app):
+    app.currCyclePath = f"cycle/{app.currCycle}.png"
+    app.cycle = app.loadImage(app.currCyclePath)
+    app.cycle = app.scaleImage(app.cycle,1/10)
+
+def updateJulia(app):
+    app.currJuliaPath = f"juliaSet/{app.currJulia}.png"
+    app.juliaAni = app.loadImage(app.currJuliaPath)
+    app.juliaAni = app.scaleImage(app.juliaAni, 1/3)
 
 # Reset to default values
 def juliaReset(app):
@@ -153,6 +178,7 @@ def colorInput(app):
         if input != None:
             app.inputColor = (int(temp[0]), int(temp[1]), int(temp[2]))
 
+
 def keyPressed(app, event):
     # Move julia set
     if event.key == "Up":
@@ -170,9 +196,32 @@ def keyPressed(app, event):
 
 def mousePressed(app, event):
     # main screen
-    if not app.julia and app.juliaButton.clicked(event.x, event.y):
-        juliaInput(app)
-    
+    if not app.julia and not app.animateScreen:
+        # regular julia set button
+        if app.juliaButton.clicked(event.x, event.y):
+            juliaInput(app)
+
+        # animation button
+        elif app.animateButton.clicked(event.x, event.y):
+            app.animateScreen = True
+            # julia animation
+            temp = Image.open('images/julia_set.gif')
+            app.juliaSize = temp.n_frames
+
+            for i in range(temp.n_frames):
+                temp.seek(i)
+                temp.save(f"juliaset/{i}.png")
+
+            app.currJulia = 0
+            updateJulia(app)
+            
+
+    # animate screen
+    if app.animateScreen:
+        # back button
+        if app.aniBackButton.clicked(event.x, event.y):
+            app.animateScreen = False
+
     # julia set screen
     if app.julia:
         # back
@@ -206,6 +255,8 @@ def mousePressed(app, event):
             app.julia = False
             app.colorScreen = True
             app.inputColor = app.color
+
+        
     
     # color pick screen
     if app.colorScreen:
@@ -226,7 +277,12 @@ def mousePressed(app, event):
 
 # Potentially for animation/rotation of julia set (after MVP)
 def timerFired(app):
-    pass
+    if app.julia:
+        app.currCycle = app.currCycle + 1 if app.currCycle < app.cycleSize-1 else 0
+        updateCycle(app)
+    if app.animateScreen:
+        app.currJulia = app.currJulia + 1 if app.currJulia < app.juliaSize-1 else 0
+        updateJulia(app)
 
 def rgbToHex(rgb):
     return "#" + '%02x%02x%02x' % rgb
@@ -301,6 +357,16 @@ def getJuliaSet(app):
             app.juliaImage.putpixel((x,y), (r, g, b))
     app.julia = True
 
+def drawAnimateScreen(app, canvas):
+    if app.animateScreen:
+        # Back button
+        canvas.create_image(app.aniBackButton.x, app.aniBackButton.y, image=ImageTk.PhotoImage(app.aniBackButton.img))
+        canvas.create_text(app.aniBackButton.x, app.aniBackButton.y-3, font = ("MS Sans Serif", 12), text = "Back")
+
+        # Animation display
+        canvas.create_image(app.width/2, app.height/2, image=ImageTk.PhotoImage(app.juliaAni))
+        canvas.create_text(app.width/2, 60, font = ("MS Sans Serif", 16, "bold"), text = "Animation of given r value from calling \"juliaAni.py\"")
+
 # Draws the color change screen
 def drawColorScreen(app, canvas):
     if app.colorScreen:
@@ -373,11 +439,15 @@ def drawJuliaSetScreen(app, canvas):
 
 # Draws the main screen
 def drawMainScreen(app, canvas):
-    if not app.julia and not app.colorScreen and not app.loading:
+    if not app.julia and not app.colorScreen and not app.animateScreen and not app.loading:
         canvas.create_image(app.juliaButton.x, app.juliaButton.y, image=ImageTk.PhotoImage(app.juliaButton.img))
-        canvas.create_text(app.width/2, app.height/2-3, text = "Julia")
+        canvas.create_image(app.animateButton.x, app.animateButton.y, image=ImageTk.PhotoImage(app.animateButton.img))
+        canvas.create_text(app.width/2, app.height/3-3, text = "Julia")
+        canvas.create_text(app.width/2, app.height*2/3-3, text = "Animation")
+
 
 def redrawAll(app, canvas):
+    drawAnimateScreen(app, canvas)
     drawColorScreen(app, canvas)
     drawMainScreen(app, canvas)
     drawJuliaSetScreen(app, canvas)

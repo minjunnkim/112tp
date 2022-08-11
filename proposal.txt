@@ -63,7 +63,20 @@ with a color preview before actually updating the color of the fractal.
 A button to switch from recursion/normal
 
 To-do:
-Finish class julia.py (for julia sets)
 Make class button.py (for buttons)  -- Done
 Create better visuals  -- In-Progress
 Preset suggestions and guides on the input on the screen
+
+TP3 Update:
+New modules used(post MVP, so I am free, right..?) -> numpy, matplotlib.pyplot, matplotlib.animation
+Animations have been added! A downside is that we have to run a separate python file, using console input :(, but at least it works!
+I've tried making juliaAni.py a class and make it so user can do the whole thing in the main app, but I got many errors on the console
+when I tried using matplotlib.animations.FuncAnimation.
+
+
+To-do for TP3:
+zoom, complementary color swap
+Presets
+guiding texts
+readme.text
+Animation!!!  --Done
