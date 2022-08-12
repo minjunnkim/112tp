@@ -1,6 +1,5 @@
 # Minjun Kim
 # Term Project - "Complex Beauti.py"
-from calendar import c
 from cmu_112_graphics import *
 import sys
 from btns import *
