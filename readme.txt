@@ -32,7 +32,8 @@ If you do not want to wait for the entire process, you can simply try the pre-in
 
 If you would like to use the regular Julia Set visualization function, simply run the "Complex Beauti.py" file without having to run 
 "juliaAni.py" prior. Then, click on the julia button to enter your custom "c" value. Make sure the value is between -1 and 1! The
-instructions will also be on the screen. 
+instructions will also be on the screen. If you would like to try out some of the coolest looking ones, try clicking on the Presets button found on the
+bottom left of the main screen!
 
 Shortly, the Julia Set Visualization screen will show up along with the back button, zoom in/out button,
 and increase/decrease maximum iteration button. Using the arrow keys on the keyboard, you can move the visualization in the four directions.

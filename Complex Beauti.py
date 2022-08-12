@@ -1,5 +1,6 @@
 # Minjun Kim
 # Term Project - "Complex Beauti.py"
+from calendar import c
 from cmu_112_graphics import *
 import sys
 from btns import *
@@ -71,10 +72,15 @@ def appStarted(app):
 
 # Buttons
 def buttonSetup(app):
-        #Change display 
-    app.juliaButton = btns(app.width/2, app.height/3, app.btn)
+        # Change display 
+    app.juliaButton = btns(app.width/2, app.height*2/5, app.btn)
     app.backButton = btns(10+app.btn.width/2, 25, app.btn)
-    app.animateButton = btns(app.width/2, app.height*2/3, app.btn)
+    app.animateButton = btns(app.width/2, app.height*3/5, app.btn)
+
+        # Presets
+    app.juliaPreset1Button = btns(20 + app.btn.width/2, app.height-30, app.btn)
+    app.juliaPreset2Button = btns(40 + app.btn.width*3/2, app.height-30, app.btn)
+    app.juliaPreset3Button = btns(60 + app.btn.width*5/2, app.height-30, app.btn)
         
         # animation
     app.aniBackButton = btns(10+app.btn.width/2, 25, app.btn)
@@ -199,10 +205,31 @@ def keyPressed(app, event):
 
 def mousePressed(app, event):
     # main screen
-    if not app.julia and not app.animateScreen:
+    if not app.julia and not app.animateScreen and not app.colorScreen:
         # regular julia set button
         if app.juliaButton.clicked(event.x, event.y):
             juliaInput(app)
+
+        # presets button
+        elif app.juliaPreset1Button.clicked(event.x, event.y):
+            app.c = complex(-0.70176, -0.3842)
+            app.color = (139, 173, 128)
+            app.maxIter = 40
+            getJuliaSet(app)
+        
+        elif app.juliaPreset2Button.clicked(event.x, event.y):
+            app.c = complex(-0.8, 0.156)
+            app.color = (157, 128, 173)
+            app.maxIter = 70
+            getJuliaSet(app)
+
+            
+        elif app.juliaPreset3Button.clicked(event.x, event.y):
+            app.c = complex(0.285, 0.01)
+            app.color = (7, 111, 125)
+            app.maxIter = 70
+            getJuliaSet(app)
+
 
         # animation button
         elif app.animateButton.clicked(event.x, event.y):
@@ -217,16 +244,9 @@ def mousePressed(app, event):
 
             app.currJulia = 0
             updateJulia(app)
-            
-
-    # animate screen
-    if app.animateScreen:
-        # back button
-        if app.aniBackButton.clicked(event.x, event.y):
-            app.animateScreen = False
 
     # julia set screen
-    if app.julia:
+    elif app.julia:
         # back
         if app.backButton.clicked(event.x, event.y):
             app.julia = False
@@ -261,17 +281,25 @@ def mousePressed(app, event):
 
         # zoom in/out
         elif app.zoomIn.clicked(event.x, event.y):
-            app.zoom += 3
+            app.zoom += 2
             getJuliaSet(app)
         
         elif app.zoomOut.clicked(event.x, event.y) and app.zoom != 1:
-            app.zoom -= 3
+            app.zoom -= 2
             getJuliaSet(app)
         
+
+    # animate screen
+    elif app.animateScreen:
+        # back button
+        if app.aniBackButton.clicked(event.x, event.y):
+            app.animateScreen = False
+
     
     # color pick screen
-    if app.colorScreen:
+    elif app.colorScreen:
         if app.colorBackButton.clicked(event.x, event.y):
+            print("a")
             app.julia = True
             app.colorScreen = False
             app.inputColor = app.color
@@ -375,11 +403,17 @@ def drawAnimateScreen(app, canvas):
         # Animation display
         canvas.create_image(app.width/2, app.height/2, image=ImageTk.PhotoImage(app.juliaAni))
         canvas.create_text(app.width/2, 60, font = ("MS Sans Serif", 16, "bold"), text = "Animation of given r value from calling \"juliaAni.py\"")
+        canvas.create_text(app.width/2, 80, font = ("MS Sans Serif", 16, "bold"), text = "The 'a' value in c = r*cos(a) + i*r*sin(a) = r*e^{i*a} is changed from 0 to 2pi, creating this animation")
 
 # Draws the color change screen
 def drawColorScreen(app, canvas):
     if app.colorScreen:
         canvas.create_rectangle(0, 0, app.width, app.height, fill = rgbToHex((250, 223, 202)))
+
+        # Guide texts
+        canvas.create_text(app.width-20, app.height-70, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Click on the blue circle to choose your color!")
+        canvas.create_text(app.width-20, app.height-50, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "You will see a preview of your color before it is applied to your visualization")
+        canvas.create_text(app.width-20, app.height-30, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Note that only clicking on the apply button will recolor the visualization.")        
 
         # Back button
         canvas.create_image(app.colorBackButton.x, app.colorBackButton.y, image=ImageTk.PhotoImage(app.colorBackButton.img))
@@ -398,7 +432,22 @@ def drawColorScreen(app, canvas):
 # Draws the julia set visualization screen
 def drawJuliaSetScreen(app, canvas):
     if app.julia:
+        # background
         canvas.create_rectangle(0, 0, app.width, app.height, fill = rgbToHex((250, 223, 202)))
+
+        # guide texts  
+        canvas.create_text(app.width-20, app.height-160, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Use the Plus/Minus buttons to zoom in/out of the visualization and arrow keys in the keyboard to move around.")
+        canvas.create_text(app.width-20, app.height-140, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Notice that the pattern continues infinitely as you zoom in.")
+        canvas.create_text(app.width-20, app.height-110, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "If you want to go back to the original picture, press 'r' on your keyboard\n")
+
+        canvas.create_text(app.width-20, app.height-70, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Use the Up/Down buttons to increase/decrease maximum iterations.")
+        canvas.create_text(app.width-20, app.height-50, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "A higher maximum iteration will show a less accurate Julia Set but more colors.")
+        canvas.create_text(app.width-20, app.height-30, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "A lower maximum iteration will show a more accurate Julia Set but less colors.")
+
+        canvas.create_text(20, app.height-50, anchor = "w", font = ("Century Gothic", 16, "bold"), text = "Use 'To recursive'/'To normal' button to switch between the recursive algorithm and the normal while loop algorithm.")
+        canvas.create_text(20, app.height-30, anchor = "w", font = ("Century Gothic", 16, "bold"), text = "Use the 'change color' button to change the color of the visualization.")
+
+
 
         # Julia Visualization
         canvas.create_image(app.width/2, app.juliaHeight/2 + 20, image=ImageTk.PhotoImage(app.juliaImage))
@@ -410,7 +459,7 @@ def drawJuliaSetScreen(app, canvas):
         # maxIter display/control buttons
             # Header/display
         canvas.create_text(app.width/2 + app.juliaWidth/2 + 100, (app.smallIterDec.y + app.bigIterInc.y)/2, 
-                            font = ("MS Sans Serif", 16), anchor = "w", 
+                            font = ("MS Sans Serif", 16, "bold"), anchor = "w", 
                             text = f"Increase/Decrease Maximum Iteration\nCurrent: {app.maxIter}")
         
             # +10
@@ -457,12 +506,44 @@ def drawJuliaSetScreen(app, canvas):
 # Draws the main screen
 def drawMainScreen(app, canvas):
     if not app.julia and not app.colorScreen and not app.animateScreen and not app.loading:
+        # background
         canvas.create_rectangle(0, 0, app.width, app.height, fill = rgbToHex((250, 223, 202)))
-        #canvas.create_text()
+
+        # title
+        canvas.create_text(20, 30, anchor = "w", font = ("Century Gothic", 36, "italic", "bold"), text = "Julia Set Visualization")
+
+        # guide text
+        canvas.create_text(app.width-20, 30, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "This program creates a visualization of custom Julia sets, based on your input c value.")
+        canvas.create_text(app.width-20, 50, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "This c value is a complex number, x + yi, from the function f(z) = z^2 + c, where z is any complex number.")
+
+        canvas.create_text(app.width-20, 70, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "To visualize, click 'Julia' and enter your c value.")
+        canvas.create_text(app.width-20, 90, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "To animate, quite this program and run 'juliaAni.py' to create your animation.")
+        canvas.create_text(app.width-20, 110, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "You will input a 'r' value, where c = r*cos(a) + i*r*sin(a) = r*e^{i*a}")
+        canvas.create_text(app.width-20, 130, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "After 'juliaAni.py' finishes, run this program again and click on 'Animate' to see your animation.")
+        canvas.create_text(app.width-20, 150, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "The gif file will also be downloaded to your local file. Have fun!")
+
+        # footnote
+        canvas.create_text(app.width-20, app.height-70, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "Note that a preset animation is already installed in the images file, with each frame in the juliaset folder")
+        canvas.create_text(app.width-20, app.height-50, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "So, if you do not want to wait for the entire 'juliaAni.py' process, you can just click on 'Animate' to see the preset")
+        canvas.create_text(app.width-20, app.height-30, anchor = "e", font = ("Century Gothic", 16, "bold"), text = "To see some of my favorite Julia Sets, click on presets button on the bottom left.")
+
+        # buttons
         canvas.create_image(app.juliaButton.x, app.juliaButton.y, image=ImageTk.PhotoImage(app.juliaButton.img))
         canvas.create_image(app.animateButton.x, app.animateButton.y, image=ImageTk.PhotoImage(app.animateButton.img))
-        canvas.create_text(app.width/2, app.height/3-3, text = "Julia")
-        canvas.create_text(app.width/2, app.height*2/3-3, text = "Animation")
+        canvas.create_text(app.width/2, app.height*2/5-3, text = "Julia")
+        canvas.create_text(app.width/2, app.height*3/5-3, text = "Animation")
+
+            # presets
+        canvas.create_image(app.juliaPreset1Button.x, app.juliaPreset1Button.y, image=ImageTk.PhotoImage(app.juliaPreset1Button.img))
+        canvas.create_text(app.juliaPreset1Button.x, app.juliaPreset1Button.y-3, text = "Preset 1")
+
+        canvas.create_image(app.juliaPreset2Button.x, app.juliaPreset2Button.y, image=ImageTk.PhotoImage(app.juliaPreset2Button.img))
+        canvas.create_text(app.juliaPreset2Button.x, app.juliaPreset2Button.y-3, text = "Preset 2")
+        
+        canvas.create_image(app.juliaPreset3Button.x, app.juliaPreset3Button.y, image=ImageTk.PhotoImage(app.juliaPreset3Button.img))
+        canvas.create_text(app.juliaPreset3Button.x, app.juliaPreset3Button.y-3, text = "Preset 3")
+        
+
 
 
 def redrawAll(app, canvas):
