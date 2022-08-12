@@ -23,7 +23,12 @@ Now let's go through the project functions.
 
 First, if you would like to use the animation function, you must run the "juliaAni.py" first and follow the instruction
 on the console. This will take a while as it needs to render all the frames before creating the .gif file and saving it to your computer.
+However, lowering the number of frames on juliaAni.py may lower the time. 
 Then, run the "Complex Beauti.py" file and click on the animate button to see the animation you created in "juliaAni.py".
+
+You may want to start the animation processing first, try out the regular Julia Set visualization, and then come back to animation.
+If you do not want to wait for the entire process, you can simply try the pre-input gif's version of the animation. 
+(No need to run "juliaAni.py" for this. Simply click on the animate button on "Complex Beauti.py")
 
 If you would like to use the regular Julia Set visualization function, simply run the "Complex Beauti.py" file without having to run 
 "juliaAni.py" prior. Then, click on the julia button to enter your custom "c" value. Make sure the value is between -1 and 1! The
