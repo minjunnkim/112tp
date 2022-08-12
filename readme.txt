@@ -1,4 +1,4 @@
-Complex Beauti.py
+Complex Beauti.py - Julia Visualization
 This program accepts user input for "c", in the function f(z) = z^2 + c, widely known due to the sets it creates through repeated iterations.
 The most famous may be the Mandelbrot Set, but I took more interest in the Julia Set. The value "c" is a complex number, with format x+yi.
 Given such value, this program will calculate the Julia Set corresponding to it, by iterating through all pixels in 480x360, and getting 
